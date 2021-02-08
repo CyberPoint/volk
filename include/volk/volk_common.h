@@ -150,7 +150,7 @@ union bit256 {
 static inline float log2f_non_ieee(float f)
 {
     float const result = log2f(f);
-    return isinf(result) ? copysignf(127.0f, result) : result;
+    return std::isinf(result) ? copysignf(127.0f, result) : result;
 }
 
 ////////////////////////////////////////////////////////////////////////
