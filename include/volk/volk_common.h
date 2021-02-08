@@ -146,6 +146,23 @@ union bit256 {
 // log2f
 ////////////////////////////////////////////////////////////////////////
 #include <math.h>
+/* Return nonzero value if X is positive or negative infinity.  */
+# if __HAVE_DISTINCT_FLOAT128 && !__GNUC_PREREQ (7,0) \
+     && !defined __SUPPORT_SNAN__ && !defined __cplusplus
+   /* Since __builtin_isinf_sign is broken for float128 before GCC 7.0,
+      use the helper function, __isinff128, with older compilers.  This is
+      only provided for C mode, because in C++ mode, GCC has no support
+      for __builtin_types_compatible_p (and when in C++ mode, this macro is
+      not used anyway, because libstdc++ headers undefine it).  */
+#  define isinf(x) \
+    (__builtin_types_compatible_p (__typeof (x), _Float128) \
+     ? __isinff128 (x) : __builtin_isinf_sign (x))
+# elif __GNUC_PREREQ (4,4) && !defined __SUPPORT_SNAN__
+#  define isinf(x) __builtin_isinf_sign (x)
+# else
+#  define isinf(x) __MATH_TG ((x), __isinf, (x))
+# endif
+
 // +-Inf -> +-127.0f in order to match the behaviour of the SIMD kernels
 static inline float log2f_non_ieee(float f)
 {
