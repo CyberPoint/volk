@@ -146,6 +146,7 @@ union bit256 {
 // log2f
 ////////////////////////////////////////////////////////////////////////
 #include <math.h>
+#include <inttypes.h>
 // +-Inf -> +-127.0f in order to match the behaviour of the SIMD kernels
 static inline float log2f_non_ieee(float f)
 {
